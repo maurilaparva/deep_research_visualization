@@ -1,43 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import { UseChatHelpers } from 'ai/react';
-import { Button } from './ui/button.tsx';
-import { IconArrowRight } from './ui/icons.tsx';
+import { Button } from './ui/button'
+import { IconArrowRight } from './ui/icons'
 
-type EmptyScreenProps = Pick<UseChatHelpers, 'setInput' | 'append'> & {
-  id: string;
-  setApiKey: (key: string) => void;
+interface EmptyScreenProps {
+  setInput: (input: string) => void
+}
 
-  /**
-   * Back-compat: we’ll reuse this to store the **Google API key**
-   * (it used to be Serper). App.tsx still persists this into localStorage,
-   * and we’ll refactor the naming in Phase 3.
-   */
-  setSerperKey: (key: string) => void;
-
-  /** If true, the modal opens on first render when no key is present */
-  initialOpen?: boolean;
-};
-
-const exampleMessages = [
+const examplePrompts = [
   {
-    heading: `Which supplement may slow the progression of Alzheimer's disease`,
-    message: `Which supplement may slow the progression of Alzheimer's disease?`
+    heading: 'Exploratory Research',
+    message: 'What are the current approaches to balancing depth and breadth in literature reviews of interdisciplinary topics?'
   },
   {
-    heading: 'Which factors can trigger Alzheimer’s to get worse?',
-    message: 'Which factors can trigger Alzheimer’s to get worse?'
+    heading: 'Analytical Deep Dive', 
+    message: 'Compare and analyze the effectiveness of different prompt engineering techniques for academic research tasks between 2023-2025.'
+  },
+  {
+    heading: 'Comparative Analysis',
+    message: 'How do traditional systematic review methods compare to AI-assisted literature review approaches in terms of comprehensiveness and efficiency?'
   }
-];
+]
 
-export function EmptyScreen({
-  setInput,
-  id,
-  append,
-  setApiKey,
-  setSerperKey, // ← reused as Google API key setter (back-compat)
-  initialOpen
-}: EmptyScreenProps) {
-  const [open, setOpen] = useState<boolean>(!!initialOpen);
+export function EmptyScreen({ setInput }: EmptyScreenProps) {
+  return (
+    <div className="mx-auto max-w-2xl px-4">
+      <div className="rounded-lg border bg-background p-8">
+        <h1 className="mb-2 text-lg font-semibold">
+          Welcome to Deep Research Visualization
+        </h1>
+        <p className="mb-4 leading-normal text-muted-foreground">
+          This tool helps you refine research prompts by visualizing how changes in prompt structure affect depth, breadth, and quality of responses. Get started by exploring one of these examples or try your own research question.
+        </p>
+        <div className="mt-4 flex flex-col items-start space-y-2">
+          {examplePrompts.map((example, index) => (
+            <Button
+              key={index}
+              variant="link"
+              className="h-auto p-0 text-base"
+              onClick={() => setInput(example.message)}
+            >
+              <IconArrowRight className="mr-2 text-muted-foreground" />
+              {example.heading}
+            </Button>
+          ))}
+        </div>
+        <p className="mt-4 text-xs text-muted-foreground">
+          Our visualization helps you balance research depth vs breadth, detect missing constraints, and refine prompts for more comprehensive results.
+        </p>
+      </div>
+    </div>
+  )
 
   // inputs
   const [openaiKeyInput, setOpenaiKeyInput] = useState<string>('');

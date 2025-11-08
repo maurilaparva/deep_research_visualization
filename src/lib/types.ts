@@ -1,57 +1,50 @@
 import { type Message } from 'ai'
 import {Node as ReactFlowNode, Edge as ReactFlowEdge} from 'reactflow'
-export interface Chat extends Record<string, any> {
-    id: string
-    title: string
-    createdAt: Date
-    userId: string
-    path: string
-    messages: Message[]
-    sharePath?: string
-    // keywordsListAnswer: string[]
-    // keywordsListQuestion: string[]
-  }
+import { type Message } from 'ai'
+import { Node as ReactFlowNode, Edge as ReactFlowEdge } from 'reactflow'
 
-export type ServerActionResult<Result> = Promise<Result | { error: string }>
+export type ConstraintType = 'evidence' | 'scope' | 'comparisons'
+export type MetricType = 'depth' | 'breadth' | 'coherence' | 'relevance'
 
-
-export type CustomGraphNode = ReactFlowNode 
-& {
-//   data: {
-//     kgName: string
-//     gptName: string
-//     label: string
-//   }
-  category: string
-  step?: number
+export interface PromptAnalysis {
+  intent: 'exploratory' | 'analytical' | 'comparative'
+  constraints: Record<ConstraintType, boolean>
+  metrics: Record<MetricType, number>
+  suggestions: string[]
 }
 
-export type CustomGraphEdge = ReactFlowEdge
- & {
-  
-  step?: number
-//   data: {
-//     papers: { [key: string]: string[] }
-//   } 
-}
-
-export type KGNode = {
+export interface PromptVersion {
   id: string
-  name: string
-  category: string
+  text: string
+  analysis: PromptAnalysis
+  response?: string
+  quality?: {
+    depth: number
+    coherence: number
+    relevance: number
+  }
 }
 
-export type KGEdge = {
-  source: string
-  target: string
-  category: string
-  PubMed_ID: string
+export interface PromptFlow {
+  nodes: ReactFlowNode[] // Represents prompt versions
+  edges: ReactFlowEdge[] // Represents refinement relationships
 }
 
-// export interface VisualizationResult {
-//   nodes: KGNode[]
-//   edges: KGEdge[]
-// }
+export interface PromptState {
+  history: PromptVersion[]
+  current: PromptVersion | null
+  flow: PromptFlow
+}
+
+// Existing types kept for compatibility
+export interface Chat extends Record<string, any> {
+  id: string
+  title: string
+  createdAt: Date
+  messages: Message[]
+}
+
+export type ServerActionResult<R> = Promise<R | { error: string }>
 
 export interface Recommendation {
   id: number
