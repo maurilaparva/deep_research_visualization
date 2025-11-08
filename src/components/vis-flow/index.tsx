@@ -8,8 +8,6 @@ import { gptTriplesAtom } from "../../lib/state";
 import { categoryColorMapping } from "../../lib/utils";
 import { useAtom } from "jotai";
 import { Button } from "../ui/button";
-import { Spinner } from "@material-tailwind/react";
-import { Node,Edge } from "reactflow";
 
 const nodesTypes = {
     custom: CustomNode
@@ -59,7 +57,7 @@ const FlowComponent = ({
     const reactFlowInstance = useReactFlow()
     const [gptTriples] = useAtom(gptTriplesAtom)
     const gptTriplesRef = useRef(gptTriples)
-    const [totalRecommendations, setTotalRecommendations] = useState(0)
+    const [totalRecommendations] = useState(0)
 
     useEffect(() => {
         gptTriplesRef.current = gptTriples
@@ -76,20 +74,17 @@ const FlowComponent = ({
             reactFlowInstance.fitView({ padding: 0.2 })
     
             // Assuming you want to zoom in to the new nodes (with opacity 1) after fitting view
-            const newNodes = nodes.filter(node => node.style?.opacity === 1)
-            if (newNodes.length > 0) {
-              // Example logic to zoom into the area of new nodes
-              // Adjust according to your app's logic
-              const x = newNodes[0].position.x // Simplified, consider calculating the center or a specific target
-              const y = newNodes[0].position.y
-            }
+                        const newNodes = nodes.filter((node: any) => node.style?.opacity === 1)
+                        if (newNodes.length > 0) {
+                            // Example: we found nodes that are fully revealed; you could zoom or center here.
+                        }
           }
         }
     
         adjustView()
       }, [nodes.length, reactFlowInstance])
 
-    const handleonNodeClick = async (event: any, node: any) => {
+    const handleonNodeClick = async (_event: any, node: any) => {
         // Set hovered node id in a state that's accessible by the chat component
         setClickedNode(node)
     }
@@ -138,7 +133,9 @@ const FlowComponent = ({
 
                 {isLoadingBackendData && !isLoading && (
                         <div className="absolute inset-0 bg-white bg-opacity-[85%] flex flex-wrap justify-center items-center z-10 p-[150px]">
-                            <Spinner color="blue" className="h-[60px] w-[60px]" />
+                                                        <div className="h-[60px] w-[60px] flex items-center justify-center">
+                                                            <div className="animate-spin h-10 w-10 border-4 border-blue-500 rounded-full" />
+                                                        </div>
                             <div className="basis-full h-0"></div>
                             <div className="text-gray-700 text-[20px]">
                             Waiting loading data from backend knowledge graph...
@@ -151,23 +148,26 @@ const FlowComponent = ({
                 <ReactFlow
                     nodes = {
                         nodes
-                            .filter(node => node.step <= activeStep)
-                            .map(node => ({
-                            ...node,
-                            style: {
-                                backgroundColor: categoryColorMapping[node.category] || '#cccccc',
-                                borderRadius: 6,
-                                padding: 0,
-                                color: '#000',
-                                fontWeight: 500,
-                                fontSize: 14
-                            }
-                            }))
+                            .filter((node: any) => node.step <= activeStep)
+                            .map((node: any) => ({
+                                    ...node,
+                                    style: {
+                                        backgroundColor: categoryColorMapping[node.category] || '#cccccc',
+                                        borderRadius: 6,
+                                        padding: 2,
+                                        color: '#000',
+                                        fontWeight: 500,
+                                        fontSize: 12
+                                    }
+                                    }))
                         }
 
-                    edges = {edges.filter(edge => edge.step <= activeStep)}
+                    edges = {edges.filter((edge: any) => edge.step <= activeStep)}
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
+                        nodesDraggable={true}
+                        nodesConnectable={false}
+                        nodesFocusable={true}
                     fitView
                     proOptions={proOptions}
                     onConnect={onConnect}
