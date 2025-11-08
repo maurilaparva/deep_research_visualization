@@ -1,6 +1,6 @@
 # React + TypeScript + Vite
 
-KnowNet 
+Deep Research Visualization
 
 ## Quick Start
 
