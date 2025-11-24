@@ -487,7 +487,6 @@ function MiniPromptGraph({ history, activeIndex, onSelect }: MiniPromptGraphProp
     <div className="mt-4 border-t pt-3 w-full">
       <span className="text-xs font-medium text-muted-foreground">Prompt Graph</span>
 
-      {/* Center */}
       <div className="mt-3 w-full flex justify-center">
         <div className="flex items-start gap-3 overflow-x-auto pb-2 px-2">
           {history.map((p, index) => {
@@ -500,17 +499,22 @@ function MiniPromptGraph({ history, activeIndex, onSelect }: MiniPromptGraphProp
                 <button
                   type="button"
                   onClick={() => onSelect(index)}
-                  className={`flex flex-col items-stretch text-xs rounded-lg border px-3 py-2 min-w-[120px] max-w-[160px] text-left transition-all
-                      ${
-                        isActive
-                          ? 'bg-neutral-200 border-neutral-400 shadow-sm'
-                          : 'bg-white border-neutral-200 hover:border-neutral-400'
-                      }`}
+                  className={
+                    `flex flex-col items-stretch text-xs rounded-lg px-3 py-2 min-w-[120px] max-w-[160px] text-left transition-all border ` +
+                    (isActive
+                      ? 'bg-black text-white border-black shadow-lg scale-[1.02]'
+                      : 'bg-white text-black border-neutral-200 hover:border-neutral-400')
+                  }
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-medium">v{index + 1}</span>
                     {analysis?.intent && (
-                      <span className="px-1.5 py-0.5 rounded-full bg-neutral-100 text-[10px] uppercase tracking-[0.12em] text-neutral-600">
+                      <span className={
+                        `px-1.5 py-0.5 rounded-full text-[10px] uppercase tracking-[0.12em] ` +
+                        (isActive
+                          ? 'bg-white text-black'
+                          : 'bg-neutral-100 text-neutral-600')
+                      }>
                         {analysis.intent}
                       </span>
                     )}
@@ -521,14 +525,22 @@ function MiniPromptGraph({ history, activeIndex, onSelect }: MiniPromptGraphProp
                       {suggestions.slice(0, 2).map((s, i) => (
                         <div
                           key={i}
-                          className="rounded-md bg-neutral-50 border border-neutral-200 px-2 py-0.5 text-[10px] leading-snug"
+                          className={
+                            `rounded-md border px-2 py-0.5 text-[10px] leading-snug ` +
+                            (isActive
+                              ? 'bg-white/20 border-white text-white'
+                              : 'bg-neutral-50 border-neutral-200 text-black')
+                          }
                         >
                           {s}
                         </div>
                       ))}
 
                       {suggestions.length > 2 && (
-                        <div className="text-[10px] text-neutral-500 mt-0.5">
+                        <div className={
+                          `text-[10px] mt-0.5 ` +
+                          (isActive ? 'text-white/80' : 'text-neutral-500')
+                        }>
                           +{suggestions.length - 2} more
                         </div>
                       )}
@@ -536,9 +548,13 @@ function MiniPromptGraph({ history, activeIndex, onSelect }: MiniPromptGraphProp
                   )}
                 </button>
 
-                {/* Arrow */}
                 {index < history.length - 1 && (
-                  <div className="flex items-center mx-1 text-neutral-400 text-xs shrink-0">
+                  <div
+                    className={
+                      `flex items-center mx-1 text-xs shrink-0 ` +
+                      (isActive ? 'text-black' : 'text-neutral-400')
+                    }
+                  >
                     →
                   </div>
                 )}
@@ -550,6 +566,7 @@ function MiniPromptGraph({ history, activeIndex, onSelect }: MiniPromptGraphProp
     </div>
   )
 }
+
 
 /* -------------------------------------------
 TIMELINE
