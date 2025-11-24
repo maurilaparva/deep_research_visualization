@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.53",
+    "@fontsource/inter": "^5.0.0",
+    "@fontsource/ibm-plex-sans": "^5.0.0",
     "@material-tailwind/react": "^2.1.10",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.1",

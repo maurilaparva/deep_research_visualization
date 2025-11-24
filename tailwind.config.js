@@ -14,6 +14,13 @@ module.exports = withMT({
     "text-rose-700","bg-rose-50","border-rose-200","hover:bg-rose-100","bg-rose-500",
     // Neutral (gray)
     "text-zinc-700","bg-zinc-50","border-zinc-200","hover:bg-zinc-100","bg-zinc-400",
+    "bg-stone-200",
+    "bg-stone-800",
+    "bg-neutral-200",
+    "bg-neutral-800",
+    "h-2",
+    "rounded-full",
+    "overflow-hidden",
   ],
   theme: {
     container: {
@@ -25,9 +32,8 @@ module.exports = withMT({
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-geist-sans)'],
-        mono: ['var(--font-geist-mono)']
-      },
+      sans: ['IBM Plex Sans', 'sans-serif'],
+    },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

@@ -1,7 +1,24 @@
+/* --- Professional Research Font --- */
+@import "@fontsource/ibm-plex-sans/300.css";
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+@import "@fontsource/ibm-plex-sans/700.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* --- Professional Research Font --- */
 
+
+* {
+  font-family: 'IBM Plex Sans', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* --- Smooth professional text --- */
+html, body {
+  @apply antialiased;
+}
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -148,4 +165,13 @@ button:focus-visible {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 1.5s ease-out;
 }
