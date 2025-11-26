@@ -3,9 +3,9 @@ import react from '@vitejs/plugin-react-swc'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/prototype',
+  base: '/deep_research_visualization/',
   plugins: [react()],
   server: {
-    port: 5185, // Set your desired port here
+    port: 5185, // fine for local dev
   },
 })
