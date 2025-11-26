@@ -1,7 +1,8 @@
 import { PromptAnalysis } from './types'
+import { API_BASE } from "./config";
 
 export async function analyzePrompt(text: string): Promise<PromptAnalysis> {
-  const res = await fetch("http://localhost:5180/api/analyze", {
+  const res = await fetch(`${API_BASE}/api/analyze`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ prompt: text }),
