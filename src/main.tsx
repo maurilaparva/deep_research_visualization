@@ -9,7 +9,7 @@ import { App } from './components/App.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter basename='/prototype'>
+    <BrowserRouter basename='/deep_research_visualization/'>
       <App />
     </BrowserRouter>
   </React.StrictMode>
