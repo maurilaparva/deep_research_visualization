@@ -2,8 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 import json
-from openai import OpenAI
+import traceback
 from dotenv import load_dotenv
+import OpenAI
 
 load_dotenv()
 
@@ -79,7 +80,15 @@ def _chat(model_id, messages, max_tokens, temperature=TEMPERATURE):
         temperature=temperature,
     )
 
-    text = resp.choices[0].message.content or ""
+    msg = resp.choices[0].message
+
+    # New Fireworks format sometimes uses a list for content
+    if isinstance(msg.content, list):
+        text = "".join(block.get("text", "") for block in msg.content)
+    elif isinstance(msg.content, str):
+        text = msg.content
+    else:
+        text = ""
     usage = {
         "prompt_tokens": resp.usage.prompt_tokens or 0,
         "completion_tokens": resp.usage.completion_tokens or 0,
@@ -187,6 +196,8 @@ def api_analyze():
         return jsonify({"result": result, "usage": usage})
 
     except Exception as e:
+        print("🔥 ERROR in /api/analyze:", repr(e))
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 

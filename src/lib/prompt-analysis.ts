@@ -8,11 +8,16 @@ export async function analyzePrompt(text: string): Promise<PromptAnalysis> {
     body: JSON.stringify({ prompt: text }),
   });
 
+  // Read the raw body once
+  const raw = await res.text();
+  console.log("analyzePrompt status:", res.status, "raw body:", raw);
+
   if (!res.ok) {
+    // This will now show you the real Flask error in the console
     throw new Error("Backend analysis failed");
   }
 
-  const { result } = await res.json();
+  const { result } = JSON.parse(raw);
 
   if (!result) {
     throw new Error("Invalid response format from backend");
@@ -24,7 +29,7 @@ export async function analyzePrompt(text: string): Promise<PromptAnalysis> {
     constraints: {
       evidence: (result.constraints_present || []).includes("evidence"),
       scope: (result.constraints_present || []).includes("scope"),
-      comparisons: (result.constraints_present || []).includes("comparisons")
+      comparisons: (result.constraints_present || []).includes("comparisons"),
     },
 
     metrics: {
@@ -34,6 +39,6 @@ export async function analyzePrompt(text: string): Promise<PromptAnalysis> {
       relevance: (result.scores?.relevance ?? 0) / 100,
     },
 
-    suggestions: result.suggestions || []
+    suggestions: result.suggestions || [],
   };
 }
