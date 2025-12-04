@@ -4,7 +4,7 @@ import os
 import json
 import traceback
 from dotenv import load_dotenv
-import OpenAI
+from openai import OpenAI
 
 load_dotenv()
 
@@ -25,8 +25,8 @@ if not FIREWORKS_API:
 # Fireworks client
 # ------------------------------
 client = OpenAI(
-    base_url="https://api.fireworks.ai/inference/v1",
     api_key=FIREWORKS_API,
+    base_url="https://api.fireworks.ai/inference/v1",
 )
 
 # ------------------------------
@@ -36,7 +36,7 @@ MAX_TOKENS_ANALYZE = 256
 MAX_TOKENS_REWRITE = 800
 MAX_TOKENS_REFINE = 600
 TEMPERATURE = 0.0  # deterministic
-MODEL_ID = "accounts/fireworks/models/llama-v3p1-8b-instruct"
+MODEL_ID = "accounts/fireworks/models/llama-v3p3-70b-instruct"
 
 # ======================================================
 # JSON EXTRACTION (UPGRADED)
@@ -73,28 +73,59 @@ def _parse_last_json(s: str):
 # ======================================================
 
 def _chat(model_id, messages, max_tokens, temperature=TEMPERATURE):
-    resp = client.chat.completions.create(
-        model=model_id,
-        messages=messages,
-        max_tokens=max_tokens,
-        temperature=temperature,
-    )
+    try:
+        resp = client.chat.completions.create(
+            model=model_id,
+            messages=messages,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
 
-    msg = resp.choices[0].message
+        msg = resp.choices[0].message
 
-    # New Fireworks format sometimes uses a list for content
-    if isinstance(msg.content, list):
-        text = "".join(block.get("text", "") for block in msg.content)
-    elif isinstance(msg.content, str):
-        text = msg.content
-    else:
-        text = ""
-    usage = {
-        "prompt_tokens": resp.usage.prompt_tokens or 0,
-        "completion_tokens": resp.usage.completion_tokens or 0,
-        "total_tokens": resp.usage.total_tokens or 0,
-    }
-    return text, usage
+        # New Fireworks format sometimes uses a list
+        if isinstance(msg.content, list):
+            text = "".join(block.get("text", "") for block in msg.content)
+        elif isinstance(msg.content, str):
+            text = msg.content
+        else:
+            text = ""
+
+        usage = {
+            "prompt_tokens": resp.usage.prompt_tokens or 0,
+            "completion_tokens": resp.usage.completion_tokens or 0,
+            "total_tokens": resp.usage.total_tokens or 0,
+        }
+
+        return text, usage
+
+    except Exception as e:
+        # 🔥 NEW DEBUG LOGGING BLOCK
+        print("\n🔥🔥🔥 ERROR inside _chat() — FULL DEBUG INFO 🔥🔥🔥")
+        print("Exception type:", type(e))
+        print("Exception repr:", repr(e))
+
+        # If the OpenAI client stored HTTP response info, dump it
+        resp_obj = getattr(e, "response", None)
+        if resp_obj is not None:
+            try:
+                print("HTTP status:", getattr(resp_obj, "status_code", "N/A"))
+                body = (
+                    getattr(resp_obj, "text", None)
+                    or getattr(resp_obj, "content", None)
+                )
+                print("HTTP body:", body)
+                print("HTTP headers:", getattr(resp_obj, "headers", "N/A"))
+            except Exception as inner:
+                print("Failed to inspect error.response:", repr(inner))
+
+        print("Full traceback:")
+        traceback.print_exc()
+        print("🔥🔥🔥 END DEBUG BLOCK 🔥🔥🔥\n")
+
+        # Re-raise so api_* sees it
+        raise
+
 
 # ======================================================
 # ANALYZE
