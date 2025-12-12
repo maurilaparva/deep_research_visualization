@@ -34,11 +34,4 @@ The system operates strictly at the prompt level and does not generate, rewrite,
 
 All prompts, survey instruments, and evaluation procedures referenced in the accompanying paper are included in this repository.
 
----
 
-## Citation
-
-If you reference this system in academic work, please cite:
-
-Interactive Visualization for Deep Research Prompt Refinement  
-Villavicencio et al., CSCI 5541 NLP, 2025
